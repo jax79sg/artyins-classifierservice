@@ -9,8 +9,6 @@ This is a submodule for the artyins architecture. Please refer to [main module](
 
 ## Table of Contents (Optional)
 
-> If your `README` has a lot of info, section headers might be nice.
-
 - [Usage](#Usage)
 - [Virtualenv](#Virtualenv)
 - [Tests](#Tests)
