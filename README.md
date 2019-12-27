@@ -19,7 +19,7 @@ This is a submodule for the artyins architecture. Please refer to [main module](
 All model inferencing classes needs to implement the abstract Model class from score/model.py. An example is created in score/testmodel.py. Contributors, please ensure that you add your test codes into unitest.py (See [Tests] before you push to master branch.
 
 Abstract Model Class
-```
+```python
 from abc import ABC, abstractmethod
 class Model(ABC):
     """  An abstract base class for ML model prediction code """
@@ -44,7 +44,7 @@ class Model(ABC):
 
 ```
 An example on how to implement the Abstract model class
-```
+```python
 from model import Model
 from schema import Schema
 from schema import Or
@@ -93,19 +93,23 @@ if __name__=="__main__":
 ---
 
 ## Virtualenv
-`python3 -m venv venv
+```shell
+python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt`
-
+```
 ### Clone
 
-- Clone this repo to your local machine using `git clone https://github.com/jax79sg/artyins-classifierservice`
+- Clone this repo to your local machine using 
+```shell
+git clone https://github.com/jax79sg/artyins-classifierservice
+```
 ---
 
 ## Tests 
 This repository is linked to [Travis CI/CD](https://travis-ci.com/jax79sg/artyins-classifierservice). You are required to write the necessary unit tests if you introduce more model classes.
 Example of test.py
-```
+```python
 import unittest
 
 class TestModels(unittest.TestCase):
