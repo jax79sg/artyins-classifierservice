@@ -1,7 +1,7 @@
 [![Classifier Service](https://github.com/jax79sg/artyins-classifierservice/raw/master/SoftwareArchitecture-MonitorService.jpg)]()
 
 # Classifier Service For artyins architecture
-This is a submodule for the artyins architecture. Please refer to main module for full build details.
+This is a submodule for the artyins architecture. Please refer to [main module](https://github.com/jax79sg/artyins) for full build details.
 
 [![Build Status](https://travis-ci.com/jax79sg/artyins-classifierservice.svg?token=BREzYzgtHGHQp4of21Xp&branch=master)](https://travis-ci.com/jax79sg/artyins-classifierservice)
 
@@ -9,35 +9,90 @@ This is a submodule for the artyins architecture. Please refer to main module fo
 
 ## Table of Contents (Optional)
 
-> If your `README` has a lot of info, section headers might be nice.
-
-- [Installation](#installation)
-- [Features](#features)
-- [Contributing](#contributing)
-- [Team](#team)
-- [FAQ](#faq)
-- [Support](#support)
-- [License](#license)
-
+- [Usage](#Usage)
+- [Virtualenv](#Virtualenv)
+- [Tests](#Tests)
 
 ---
 
-## Example (Optional)
+## Usage
+All model inferencing classes needs to implement the abstract Model class from score/model.py. An example is created in score/testmodel.py. Contributors, please ensure that you add your test codes into unitest.py (See [Tests] before you push to master branch.
 
-```javascript
-// code away!
-
-let generateProject = project => {
-  let code = [];
-  for (let js = 0; js < project.length; js++) {
-    code.push(js);
-  }
-};
+Abstract Model Class
 ```
+from abc import ABC, abstractmethod
+class Model(ABC):
+    """  An abstract base class for ML model prediction code """
+    @property
+    @abstractmethod
+    def input_dataschema(self):
+        raise NotImplementedError()
 
+    @property
+    @abstractmethod
+    def output_dataschema(self):
+        raise NotImplementedError()
+
+    @abstractmethod
+    #Implement the loading of model file here
+    def __init__(self):
+        raise NotImplementedError()
+
+    @abstractmethod
+    def predict(self, data):
+        self.input_dataschema.validate(data)
+
+```
+An example on how to implement the Abstract model class
+```
+from model import Model
+from schema import Schema
+from schema import Or
+import os
+import pickle
+class IrisSVCModel(Model):
+    # A demonstration of how to use 
+    input_dataschema = Schema({'sepal_length': float,
+                           'sepal_width': float,
+                           'petal_length': float,
+                           'petal_width': float})
+    # the output of the model will be one of three strings
+    output_dataschema = Schema({'species': Or("setosa", 
+                                          "versicolor", 
+                                          "virginica")})
+    def __init__(self):
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        file = open(os.path.join(dir_path, "model_files", "svc_iris_model.pickle"), 'rb')
+        self._svm_model = pickle.load(file)
+        file.close()
+
+    def predict(self, data):
+        # calling the super method to validate against the
+        # input_schema
+        super().predict(data=data)
+        # converting the incoming dictionary into a numpy array 
+        # that can be accepted by the scikit-learn model
+        X = array([data["sepal_length"], 
+                   data["sepal_width"], 
+                   data["petal_length"],
+                   data["petal_width"]]).reshape(1, -1)
+        # making the prediction 
+        y_hat = int(self._svm_model.predict(X)[0])
+        # converting the prediction into a string that will match 
+        # the output schema of the model, this list will map the 
+        # output of the scikit-learn model to the string expected by 
+        # the output schema
+        targets = ['setosa', 'versicolor', 'virginica']
+        species = targets[y_hat]
+        return {"species": species}
+
+if __name__=="__main__":
+    mymodel = IrisSVCModel()
+	
+```
 ---
 
-## Virtual Environment
+## Virtualenv
 `python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt`
@@ -47,81 +102,28 @@ pip install -r requirements.txt`
 - Clone this repo to your local machine using `git clone https://github.com/jax79sg/artyins-classifierservice`
 ---
 
-## Features
-## Usage (Optional)
-## Documentation (Optional)
-## Tests (Optional)
+## Tests 
+This repository is linked to [Travis CI/CD](https://travis-ci.com/jax79sg/artyins-classifierservice). You are required to write the necessary unit tests if you introduce more model classes.
+Example of test.py
+```
+import unittest
 
-- Going into more detail on code and technologies used
-- I utilized this nifty <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank">Markdown Cheatsheet</a> for this sample `README`.
+class TestModels(unittest.TestCase):
 
----
+    def test_testmodel(self):
+        from score.testmodel import IrisSVCModel
+        mymodel=IrisSVCModel()
+        
 
-## Contributing
+    def test_modifiedtopicmodel(self):
+        pass #Wei Deng to insert
 
-> To get started...
+    def test_bertmodel(self):
+        pass #Kah Siong to insert
 
-### Step 1
-
-- **Option 1**
-    - 🍴 Fork this repo!
-
-- **Option 2**
-    - 👯 Clone this repo to your local machine using `https://github.com/joanaz/HireDot2.git`
-
-### Step 2
-
-- **HACK AWAY!** 🔨🔨🔨
-
-### Step 3
-
-- 🔃 Create a new pull request using <a href="https://github.com/joanaz/HireDot2/compare/" target="_blank">`https://github.com/joanaz/HireDot2/compare/`</a>.
+if __name__ == '__main__':
+    unittest.main()
+```
 
 ---
 
-## Team
-
-> Or Contributors/People
-
-| <a href="http://fvcproductions.com" target="_blank">**FVCproductions**</a> | <a href="http://fvcproductions.com" target="_blank">**FVCproductions**</a> | <a href="http://fvcproductions.com" target="_blank">**FVCproductions**</a> |
-| :---: |:---:| :---:|
-| [![FVCproductions](https://avatars1.githubusercontent.com/u/4284691?v=3&s=200)](http://fvcproductions.com)    | [![FVCproductions](https://avatars1.githubusercontent.com/u/4284691?v=3&s=200)](http://fvcproductions.com) | [![FVCproductions](https://avatars1.githubusercontent.com/u/4284691?v=3&s=200)](http://fvcproductions.com)  |
-| <a href="http://github.com/fvcproductions" target="_blank">`github.com/fvcproductions`</a> | <a href="http://github.com/fvcproductions" target="_blank">`github.com/fvcproductions`</a> | <a href="http://github.com/fvcproductions" target="_blank">`github.com/fvcproductions`</a> |
-
-- You can just grab their GitHub profile image URL
-- You should probably resize their picture using `?s=200` at the end of the image URL.
-
----
-
-## FAQ
-
-- **How do I do *specifically* so and so?**
-    - No problem! Just do this.
-
----
-
-## Support
-
-Reach out to me at one of the following places!
-
-- Website at <a href="http://fvcproductions.com" target="_blank">`fvcproductions.com`</a>
-- Twitter at <a href="http://twitter.com/fvcproductions" target="_blank">`@fvcproductions`</a>
-- Insert more social links here.
-
----
-
-## Donations (Optional)
-
-- You could include a <a href="https://cdn.rawgit.com/gratipay/gratipay-badge/2.3.0/dist/gratipay.png" target="_blank">Gratipay</a> link as well.
-
-[![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.3.0/dist/gratipay.png)](https://gratipay.com/fvcproductions/)
-
-
----
-
-## License
-
-[![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
-
-- **[MIT license](http://opensource.org/licenses/mit-license.php)**
-- Copyright 2015 © <a href="http://fvcproductions.com" target="_blank">FVCproductions</a>.
