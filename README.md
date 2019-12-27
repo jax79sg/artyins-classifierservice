@@ -1,4 +1,4 @@
-[![Classifier Service](https://github.com/jax79sg/artyins-classifierservice/raw/master/images/SoftwareArchitecture-ClassifierService.jpg)]()
+[![Classifier Service](https://github.com/jax79sg/artyins-classifierservice/raw/master/images/SoftwareArchitectureClassifierService.jpg)]()
 
 # Classifier Service For artyins architecture
 This is a submodule for the artyins architecture. Please refer to [main module](https://github.com/jax79sg/artyins) for full build details.
