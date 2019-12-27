@@ -1,4 +1,4 @@
-from model import Model
+from score.model import Model
 from schema import Schema
 from schema import Or
 import os
