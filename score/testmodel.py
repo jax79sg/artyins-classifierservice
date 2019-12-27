@@ -1,14 +1,16 @@
 from model import Model
 from schema import Schema
 from schema import Or
+import os
+import pickle
 class IrisSVCModel(Model):
     # A demonstration of how to use 
-    input_schema = Schema({'sepal_length': float,
+    input_dataschema = Schema({'sepal_length': float,
                            'sepal_width': float,
                            'petal_length': float,
                            'petal_width': float})
     # the output of the model will be one of three strings
-    output_schema = Schema({'species': Or("setosa", 
+    output_dataschema = Schema({'species': Or("setosa", 
                                           "versicolor", 
                                           "virginica")})
     def __init__(self):
@@ -36,3 +38,7 @@ class IrisSVCModel(Model):
         targets = ['setosa', 'versicolor', 'virginica']
         species = targets[y_hat]
         return {"species": species}
+
+if __name__=="__main__":
+    mymodel = IrisSVCModel()
+	
