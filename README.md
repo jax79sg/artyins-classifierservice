@@ -106,9 +106,25 @@ pip install -r requirements.txt`
 
 ## Tests 
 This repository is linked to [Travis CI/CD](https://travis-ci.com/jax79sg/artyins-classifierservice). You are required to write the necessary unit tests if you introduce more model classes.
-Example of Unittest.py
+Example of test.py
 ```
+import unittest
 
+class TestModels(unittest.TestCase):
+
+    def test_testmodel(self):
+        from score.testmodel import IrisSVCModel
+        mymodel=IrisSVCModel()
+        
+
+    def test_modifiedtopicmodel(self):
+        pass #Wei Deng to insert
+
+    def test_bertmodel(self):
+        pass #Kah Siong to insert
+
+if __name__ == '__main__':
+    unittest.main()
 ```
 
 ---
