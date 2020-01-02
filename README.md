@@ -5,6 +5,8 @@ This is a submodule for the artyins architecture. Please refer to [main module](
 
 [![Build Status](https://travis-ci.com/jax79sg/artyins-classifierservice.svg?token=BREzYzgtHGHQp4of21Xp&branch=master)](https://travis-ci.com/jax79sg/artyins-classifierservice)
 
+Refer to [Trello Task list](https://trello.com/c/qlDHKzBN) for running tasks.
+
 ---
 
 ## Table of Contents (Optional)
