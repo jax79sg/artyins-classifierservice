@@ -20,7 +20,7 @@ Refer to [Trello Task list](https://trello.com/c/qlDHKzBN) for running tasks.
 ## Usage
 All model inferencing classes needs to implement the abstract Model class from score/model.py. An example is created in score/testmodel.py. Contributors, please ensure that you add your test codes into unitest.py (See [Tests] before you push to master branch.
 
-Abstract Model Class
+### Abstract Model Class
 ```python
 from abc import ABC, abstractmethod
 class Model(ABC):
@@ -45,39 +45,43 @@ class Model(ABC):
         self.input_dataschema.validate(data)
 
 ```
-An example on how to implement the Abstract model class
+### An example on how to implement the Abstract model class
 ```python
-from model import Model
+from score.model import ModelReport
 from schema import Schema
 from schema import Or
 import os
+import numpy as np
+from config import InferenceConfig
 import pickle
-class IrisSVCModel(Model):
-    # A demonstration of how to use 
+class IrisSVCModel(ModelReport):
+    # Note that this is overridden cos the one defined is meant for Keng On's use case 
     input_dataschema = Schema({'sepal_length': float,
                            'sepal_width': float,
                            'petal_length': float,
                            'petal_width': float})
-    # the output of the model will be one of three strings
+    # Note that this is overriden cos the one defined is meant for Keng On's use case
     output_dataschema = Schema({'species': Or("setosa", 
                                           "versicolor", 
                                           "virginica")})
-    def __init__(self):
+    def __init__(self,config=None):
+        if config == None:
+           config = InferenceConfig() 
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        file = open(os.path.join(dir_path, "model_files", "svc_iris_model.pickle"), 'rb')
+        file = open(os.path.join(dir_path, config.MODEL_DIR, config.MODEL_FILE), 'rb')
         self._svm_model = pickle.load(file)
         file.close()
 
-    def predict(self, data):
+    def predict(self, mydata):
         # calling the super method to validate against the
         # input_schema
-        super().predict(data=data)
+        super().predict(data=mydata)
         # converting the incoming dictionary into a numpy array 
         # that can be accepted by the scikit-learn model
-        X = array([data["sepal_length"], 
-                   data["sepal_width"], 
-                   data["petal_length"],
-                   data["petal_width"]]).reshape(1, -1)
+        X = np.array([mydata["sepal_length"], 
+                   mydata["sepal_width"], 
+                   mydata["petal_length"],
+                   mydata["petal_width"]]).reshape(1, -1)
         # making the prediction 
         y_hat = int(self._svm_model.predict(X)[0])
         # converting the prediction into a string that will match 
@@ -90,7 +94,9 @@ class IrisSVCModel(Model):
 
 if __name__=="__main__":
     mymodel = IrisSVCModel()
-	
+    data=dict(sepal_length=1,sepal_width=2,petal_length=3,petal_width=4)
+    classification=mymodel.predict(data)
+    print(classification)
 ```
 ---
 
@@ -110,25 +116,59 @@ git clone https://github.com/jax79sg/artyins-classifierservice
 
 ## Tests 
 This repository is linked to [Travis CI/CD](https://travis-ci.com/jax79sg/artyins-classifierservice). You are required to write the necessary unit tests if you introduce more model classes.
-Example of test.py
+### Unit Tests
 ```python
 import unittest
 
 class TestModels(unittest.TestCase):
 
     def test_testmodel(self):
+        print("Running TestModel Loading and Prediction")
         from score.testmodel import IrisSVCModel
-        mymodel=IrisSVCModel()
-        
+        mymodel = IrisSVCModel()
+        data=dict(sepal_length=1.0,sepal_width=2.0,petal_length=3.0,petal_width=4.0)
+        classification=mymodel.predict(data)
 
     def test_modifiedtopicmodel(self):
+        print("Running empty Modified Topic Model -  Sure pass")
         pass #Wei Deng to insert
 
+
     def test_bertmodel(self):
+        print("Running empty Bert Model - Sure pass")
         pass #Kah Siong to insert
 
 if __name__ == '__main__':
     unittest.main()
+```
+
+### Web Service Test
+```
+#Start gunicorn wsgi server
+gunicorn --bind 0.0.0.0:9898 --daemon --workers 1 wsgi:app
+```
+Send test POST request
+```python
+import requests 
+
+TEST_TYPE = 'flowers' #Options flowers sentiments
+  
+# api-endpoint
+URL = None
+DATA = None
+if TEST_TYPE=='flowers':
+   URL = "http://localhost:9898/predict_flowers"
+   DATA = [{"petal_width":1.0, 'petal_length':2.0,'sepal_width':3.1,'sepal_length':4.3,}]
+elif (TEST_TYPE=='sentiments'): 
+   URL = "http://localhost:9898/predict_sentiments"
+   DATA = {'sentences':['Physical pain is like a norm to me nowadays','Its been a painful year','I still try hard to be relavant']}
+  
+# sending get request and saving the response as response object 
+r = requests.post(url = URL, json  = DATA) 
+print(r) 
+# extracting results in json format 
+data = r.json()
+print("Data sent:\n{}\n\nData received:\n{}".format(DATA,data))
 ```
 
 ---
