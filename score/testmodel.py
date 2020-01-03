@@ -1,10 +1,10 @@
-from score.model import Model
+from score.model import ModelReport
 from schema import Schema
 from schema import Or
 import os
 import numpy as np
 import pickle
-class IrisSVCModel(Model):
+class IrisSVCModel(ModelReport):
     # Note that this is overridden cos the one defined is meant for Keng On's use case 
     input_dataschema = Schema({'sepal_length': float,
                            'sepal_width': float,

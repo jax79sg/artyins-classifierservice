@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from schema import Schema
-class Model(ABC):
+class ModelReport(ABC):
     """  An abstract base class for ML model prediction code """
     @property
     @abstractmethod
