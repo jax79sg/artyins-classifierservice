@@ -1,15 +1,17 @@
 from abc import ABC, abstractmethod
+from schema import Schema
 class Model(ABC):
     """  An abstract base class for ML model prediction code """
     @property
     @abstractmethod
     def input_dataschema(self):
-        raise NotImplementedError()
+        Schema({'sentence': str})
 
     @property
     @abstractmethod
     def output_dataschema(self):
-        raise NotImplementedError()
+        Schema({'category': And(str,lambda s: s in ('doctrine', 'training','personnel'))
+               ,'prob': And(float,lambda n: 0 <= n <= 100)})
 
     @abstractmethod
     #Implement the loading of model file here

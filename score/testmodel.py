@@ -4,12 +4,12 @@ from schema import Or
 import os
 import pickle
 class IrisSVCModel(Model):
-    # A demonstration of how to use 
+    # Note that this is overridden cos the one defined is meant for Keng On's use case 
     input_dataschema = Schema({'sepal_length': float,
                            'sepal_width': float,
                            'petal_length': float,
                            'petal_width': float})
-    # the output of the model will be one of three strings
+    # Note that this is overriden cos the one defined is meant for Keng On's use case
     output_dataschema = Schema({'species': Or("setosa", 
                                           "versicolor", 
                                           "virginica")})
