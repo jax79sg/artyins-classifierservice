@@ -3,6 +3,7 @@ from schema import Schema
 from schema import Or
 import os
 import numpy as np
+from config import InferenceConfig
 import pickle
 class IrisSVCModel(ModelReport):
     # Note that this is overridden cos the one defined is meant for Keng On's use case 
@@ -15,9 +16,8 @@ class IrisSVCModel(ModelReport):
                                           "versicolor", 
                                           "virginica")})
     def __init__(self,config=None):
-        if config==None:
-            from config import InferenceConfig
-            config=InferenceConfig()
+        if config == None:
+           config = InferenceConfig() 
         dir_path = os.path.dirname(os.path.realpath(__file__))
         file = open(os.path.join(dir_path, config.MODEL_DIR, config.MODEL_FILE), 'rb')
         self._svm_model = pickle.load(file)
