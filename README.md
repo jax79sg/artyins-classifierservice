@@ -18,22 +18,37 @@ Refer to [Trello Task list](https://trello.com/c/qlDHKzBN) for running tasks.
 ---
 
 ## Usage
-All model inferencing classes needs to implement the abstract Model class from score/model.py. An example is created in score/testmodel.py. Contributors, please ensure that you add your test codes into unitest.py (See [Tests] before you push to master branch.
+All model inferencing classes needs to implement the abstract Model class from score/model.py. An example is created in score/testmodel.py. All configuration should be set in config.py. Finally, add your model into the web service flask_app.py. Contributors, please ensure that you add your test codes into test.py (See [Tests] before you push to master branch.)
+
+### config.py
+```python
+class InferenceConfig():
+    GPU_COUNT = 1
+    
+    MODEL_SAMPLE_INPUT=dict(sepal_length=1.0,sepal_width=2.2,petal_length=3.3,petal_width=4.4)
+    MODEL_MODULE="score.testmodel"
+    MODEL_CLASS="IrisSVCModel"
+    MODEL_DIR = "model_files"
+    MODEL_FILE = "svc_iris_model.pickle"
+
+```
 
 ### Abstract Model Class
 ```python
 from abc import ABC, abstractmethod
-class Model(ABC):
+from schema import Schema
+class ModelReport(ABC):
     """  An abstract base class for ML model prediction code """
     @property
     @abstractmethod
     def input_dataschema(self):
-        raise NotImplementedError()
+        Schema({'sentence': str})
 
     @property
     @abstractmethod
     def output_dataschema(self):
-        raise NotImplementedError()
+        Schema({'category': And(str,lambda s: s in ('doctrine', 'training','personnel'))
+               ,'prob': And(float,lambda n: 0 <= n <= 100)})
 
     @abstractmethod
     #Implement the loading of model file here
@@ -43,8 +58,8 @@ class Model(ABC):
     @abstractmethod
     def predict(self, data):
         self.input_dataschema.validate(data)
-
 ```
+
 ### An example on how to implement the Abstract model class
 ```python
 from score.model import ModelReport
@@ -97,6 +112,94 @@ if __name__=="__main__":
     data=dict(sepal_length=1,sepal_width=2,petal_length=3,petal_width=4)
     classification=mymodel.predict(data)
     print(classification)
+```
+
+### Adding your model into Web Service
+You will need to add your model function into the Web Service (flask_app.py). Here is an example, you may simply add your functions.
+```python
+# Import libraries
+import os
+import sys
+import random
+import math
+import re
+import time
+import numpy as np
+import tensorflow as tf
+import logging
+import argparse
+import json
+import hashlib
+import json
+from time import time
+from urllib.parse import urlparse
+from uuid import uuid4
+import requests
+from flask import Flask, jsonify, request
+
+# Root directory of the project
+ROOT_DIR = os.path.abspath("../")
+sys.path.append(ROOT_DIR)  # To find local version of the library
+
+# Logging confg
+logging.basicConfig(level=logging.DEBUG, filename="log", filemode="a+",
+                format="%(asctime)-15s %(levelname)-8s %(message)s")
+
+############################################################
+#  Configurations
+#  Inherits from config.py
+############################################################
+from config import InferenceConfig
+config = InferenceConfig()
+
+# Create model object in inference mode.
+module = __import__(config.MODEL_MODULE, fromlist=[config.MODEL_CLASS])
+my_class = getattr(module,config.MODEL_CLASS)
+model = my_class(config)
+
+#Make a prediction before starting the server (First prediction takes longer)
+data=config.MODEL_SAMPLE_INPUT 
+classification=model.predict(data)
+logging.info('Model and weight have been loaded.')
+
+# Add your own functions here
+def run_predict_flowers(data):
+    logging.info('Loading data: %s', data)
+    allresults=[]
+    for entry in data:
+        results = model.predict(entry)
+        allresults.append(results)
+
+    return allresults
+
+
+# Instantiate the Node
+app = Flask(__name__)
+
+# Add your own functions here.
+@app.route('/predict_flowers', methods=['POST'])
+def predict_flowers_get():
+
+    if request.method == 'POST':
+        request_json = request.get_json(force=True)
+        result = run_predict_flowers(request_json)
+        
+        response_msg = json.dumps(result)
+        response = {
+            'message': response_msg
+        }
+        return jsonify(response), 200
+
+
+if __name__ == '__main__':
+
+    from argparse import ArgumentParser
+    parser = ArgumentParser()
+    parser.add_argument('-p', '--port', default=9898, type=int, help='port to listen on')
+    args = parser.parse_args()
+    port = args.port
+
+    app.run(host='0.0.0.0', port=port, debug=True)
 ```
 ---
 
