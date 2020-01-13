@@ -73,6 +73,13 @@ def predict_flowers_get():
         }
         return jsonify(response), 200
 
+@app.route('/test',methods=['GET'])
+def test_get():
+    response = {
+        'message': 'ok'
+    }
+    return jsonify(response), 200
+
 
 if __name__ == '__main__':
 
