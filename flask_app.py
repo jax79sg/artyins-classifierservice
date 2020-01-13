@@ -23,7 +23,10 @@ ROOT_DIR = os.path.abspath("../")
 sys.path.append(ROOT_DIR)  # To find local version of the library
 
 # Logging confg
-logging.basicConfig(level=logging.DEBUG, filename="log", filemode="a+",
+logging.basicConfig(level=logging.DEBUG,hanndlers=[
+        logging.FileHandler("{0}/{1}.log".format(".", "log")),
+        logging.StreamHandler()
+    ], 
                 format="%(asctime)-15s %(levelname)-8s %(message)s")
 
 ############################################################

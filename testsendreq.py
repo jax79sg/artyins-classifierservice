@@ -6,10 +6,10 @@ TEST_TYPE = 'flowers' #Options flowers sentiments
 URL = None
 DATA = None
 if TEST_TYPE=='flowers':
-   URL = "http://localhost:9898/predict_flowers"
+   URL = "http://localhost:9891/predict_flowers"
    DATA = [{"petal_width":1.0, 'petal_length':2.0,'sepal_width':3.1,'sepal_length':4.3,}]
 elif (TEST_TYPE=='sentiments'): 
-   URL = "http://localhost:9898/predict_sentiments"
+   URL = "http://localhost:9891/predict_sentiments"
    DATA = {'sentences':['Physical pain is like a norm to me nowadays','Its been a painful year','I still try hard to be relavant']}
   
 # sending get request and saving the response as response object 
