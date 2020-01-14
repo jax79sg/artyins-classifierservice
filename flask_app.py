@@ -26,7 +26,8 @@ sys.path.append(ROOT_DIR)  # To find local version of the library
 logging.basicConfig(level=logging.DEBUG,handlers=[
         logging.FileHandler("{0}/{1}.log".format(".", "log")),
         logging.StreamHandler()
-    ], format="%(asctime)-15s %(levelname)-8s %(message)s")
+    ],
+                format="%(asctime)-15s %(levelname)-8s %(message)s")
 
 ############################################################
 #  Configurations
