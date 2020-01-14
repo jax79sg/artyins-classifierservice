@@ -47,6 +47,14 @@ classification=model.predict(data)
 logging.info('Model and weight have been loaded.')
 
 
+def run_infer_content(data):
+    logging.info('Load data: %s',data)
+    allresults=[]
+    for entry in data:
+        results = model.predict(entry['content'])
+        allresults.append({"id":entry['id'], "class":results})
+    return allresults
+
 def run_predict_flowers(data):
     logging.info('Loading data: %s', data)
     allresults=[]
@@ -72,6 +80,17 @@ def predict_flowers_get():
             'message': response_msg
         }
         return jsonify(response), 200
+
+@app.route('/infer_content',methods=['POST'])
+def infer_content_get():
+     request_json = request.get_json(force=True)
+     result = run_infer_content(request_json)
+     response_msg = json.dumps(result)
+     response = {
+         'results': response_msg
+     }
+     return jsonify(response), 200
+
 
 @app.route('/test',methods=['GET'])
 def test_get():

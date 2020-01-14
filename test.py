@@ -8,6 +8,12 @@ class TestModels(unittest.TestCase):
         mymodel = IrisSVCModel()
         data=dict(sepal_length=1.0,sepal_width=2.0,petal_length=3.0,petal_width=4.0)
         classification=mymodel.predict(data)
+    
+    def test_dummymodel(self):
+        from score.dummy import DummyModel
+        print("Dummy")
+        mymodel = DummyModel()
+        print(mymodel.predict('asljks'))
 
     def test_modifiedtopicmodel(self):
         print("Running empty Modified Topic Model -  Sure pass")
