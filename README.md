@@ -17,8 +17,17 @@ Refer to [Trello Task list](https://trello.com/c/qlDHKzBN) for running tasks.
 - [Tests](#Tests)
 
 ---
-
 ## Usage
+The classifier service can be called by a HTTP POST call. Primarily on http://artyins-classifierservice:9891/infer_content. It expects a json of the following format
+```json
+[{"id":1,"content":"adfsfswjhrafkf"},{"id":2,"content":"kfsdfjsfsjhsd"}]
+```
+After the content is successfully extracted, it will return a json of the following format
+```python
+{"results":[{"id":1,"class":"DOCTRINE"},{"id":2,"section":"class":"DOCTRINE"}]}
+```
+
+## Contributing
 All model inferencing classes needs to implement the abstract Model class from score/model.py. An example is created in score/testmodel.py. All configuration should be set in config.py. Finally, add your model into the web service flask_app.py. Contributors, please ensure that you add your test codes into test.py (See [Tests] before you push to master branch.)
 
 ### config.py
