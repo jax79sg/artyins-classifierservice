@@ -6,7 +6,6 @@ import math
 import re
 import time
 import numpy as np
-import tensorflow as tf
 import logging
 import argparse
 import json
