@@ -5,7 +5,6 @@ RUN apt update && \
 RUN git clone https://github.com/jax79sg/artyins-classifierservice
 RUN cd artyins-classifierservice && \
     pip install -r requirements.txt 
-EXPOSE 9891
 WORKDIR artyins-classifierservice
 ENTRYPOINT ["gunicorn","--bind","0.0.0.0:9891","--workers","10","wsgi:app"]
 
