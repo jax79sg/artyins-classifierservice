@@ -48,7 +48,7 @@ def run_infer_content(data):
     logging.info('Load data: %s',data)
     if isinstance(data,str):
         logging.info("Data received is string, converting to object")
-        data = json.load(data)
+        data = json.loads(data)
     allresults=[]
     for entry in data:
         results = model.predict(entry['content'])
