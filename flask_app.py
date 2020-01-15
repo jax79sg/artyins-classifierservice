@@ -24,7 +24,7 @@ sys.path.append(ROOT_DIR)  # To find local version of the library
 
 # Logging confg
 logging.basicConfig(level=logging.DEBUG,handlers=[
-        logging.FileHandler("{0}/{1}.log".format(".", "log")),
+        logging.FileHandler("{0}/{1}.log".format("/logs", "classifierservice-flask")),
         logging.StreamHandler()])
 
 ############################################################
