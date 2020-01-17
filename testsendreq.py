@@ -3,7 +3,7 @@ import requests
 TEST_TYPE = 'flowers' #Options flowers sentiments
   
 # api-endpoint
-URL = http://localhost:9891/test
+URL = "http://localhost:9891/test"
 #DATA = None
 #if TEST_TYPE=='flowers':
 #   URL = "http://localhost:9891/predict_flowers"
