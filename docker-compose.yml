@@ -3,7 +3,7 @@ version: '2.1'
 services:
 
   jobsvc:
-    image: artyins-extractionservice:1.0-SNAPSHOT
+    image: artyins-classifierservice
     restart: always
     volumes:
     - ./logs:/logs
