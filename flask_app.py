@@ -45,7 +45,7 @@ logging.info('Model and weight have been loaded.')
 
 
 def run_infer_content(data):
-    logging.info('Load data: %s',data)
+    #logging.info('Load data: %s',data)
     if isinstance(data,str):
         logging.info("Data received is string, converting to object")
         data = json.loads(data)
@@ -56,7 +56,7 @@ def run_infer_content(data):
     return allresults
 
 def run_predict_flowers(data):
-    logging.info('Loading data: %s', data)
+    #logging.info('Loading data: %s', data)
     allresults=[]
     for entry in data:
         results = model.predict(entry)
