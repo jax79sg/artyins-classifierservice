@@ -94,7 +94,7 @@ def infer_content_get():
 
 @app.route('/test',methods=['GET'])
 def test_get():
-    logger.info("Version 0.10")
+    logging.info("Version 0.10")
     response = {
         'message': 'ok'
     }
