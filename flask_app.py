@@ -77,7 +77,7 @@ def predict_flowers_get():
         
         response_msg = json.dumps(result)
         response = {
-            'message': response_msg
+            'results': result
         }
         return jsonify(response), 200
 
@@ -87,7 +87,7 @@ def infer_content_get():
      result = run_infer_content(request_json)
      response_msg = json.dumps(result)
      response = {
-         'results': response_msg
+         'results': result
      }
      return jsonify(response), 200
 
